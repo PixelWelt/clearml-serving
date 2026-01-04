@@ -76,12 +76,9 @@ services:
 
 
   clearml-serving-inference:
-    image: clearml/clearml-serving-inference:latest
+    image: clearml/clearml-serving-inference-intel:latest
     container_name: clearml-serving-inference
     restart: unless-stopped
-    # optimize perforamnce
-    security_opt:
-      - seccomp:unconfined
     ports:
       - "8080:8080"
     environment:
@@ -91,25 +88,14 @@ services:
       CLEARML_API_ACCESS_KEY: ${CLEARML_API_ACCESS_KEY}
       CLEARML_API_SECRET_KEY: ${CLEARML_API_SECRET_KEY}
       CLEARML_SERVING_TASK_ID: ${CLEARML_SERVING_TASK_ID:-}
-      CLEARML_INFERENCE_TASK_ID: ${CLEARML_INFERENCE_TASK_ID:-}
       CLEARML_SERVING_PORT: ${CLEARML_SERVING_PORT:-8080}
       CLEARML_SERVING_POLL_FREQ: ${CLEARML_SERVING_POLL_FREQ:-1.0}
-      CLEARML_DEFAULT_SERVE_SUFFIX: ${CLEARML_DEFAULT_SERVE_SUFFIX:-serve}
       CLEARML_DEFAULT_BASE_SERVE_URL: ${CLEARML_DEFAULT_BASE_SERVE_URL:-http://127.0.0.1:8080/serve}
       CLEARML_DEFAULT_KAFKA_SERVE_URL: ${CLEARML_DEFAULT_KAFKA_SERVE_URL:-clearml-serving-kafka:9092}
       CLEARML_DEFAULT_TRITON_GRPC_ADDR: ${CLEARML_DEFAULT_TRITON_GRPC_ADDR:-clearml-serving-triton:8001}
       CLEARML_USE_GUNICORN: ${CLEARML_USE_GUNICORN:-}
-      CLEARML_SERVING_RESTART_ON_FAILURE: ${CLEARML_SERVING_RESTART_ON_FAILURE:-}
       CLEARML_SERVING_NUM_PROCESS: ${CLEARML_SERVING_NUM_PROCESS:-}
       CLEARML_EXTRA_PYTHON_PACKAGES: ${CLEARML_EXTRA_PYTHON_PACKAGES:-}
-      CLEARML_ENABLE_ENDPOINT_TELEMETRY: ${CLEARML_ENABLE_ENDPOINT_TELEMETRY:-1}
-      CLEARML_SERVING_DEV_CUDAEXCEPTION: ${CLEARML_SERVING_DEV_CUDAEXCEPTION:-0}
-      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
-      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
-      AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION:-}
-      GOOGLE_APPLICATION_CREDENTIALS: ${GOOGLE_APPLICATION_CREDENTIALS:-}
-      AZURE_STORAGE_ACCOUNT: ${AZURE_STORAGE_ACCOUNT:-}
-      AZURE_STORAGE_KEY: ${AZURE_STORAGE_KEY:-}
     depends_on:
       - kafka
       - clearml-serving-triton
@@ -120,9 +106,6 @@ services:
     image: clearml/clearml-serving-triton:latest
     container_name: clearml-serving-triton
     restart: unless-stopped
-    # optimize perforamnce
-    security_opt:
-      - seccomp:unconfined
     # ports:
       # - "8001:8001"
     environment:
@@ -135,29 +118,15 @@ services:
       CLEARML_TRITON_POLL_FREQ: ${CLEARML_TRITON_POLL_FREQ:-1.0}
       CLEARML_TRITON_METRIC_FREQ: ${CLEARML_TRITON_METRIC_FREQ:-1.0}
       CLEARML_EXTRA_PYTHON_PACKAGES: ${CLEARML_EXTRA_PYTHON_PACKAGES:-}      
-      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
-      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
-      AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION:-}
-      GOOGLE_APPLICATION_CREDENTIALS: ${GOOGLE_APPLICATION_CREDENTIALS:-}
-      AZURE_STORAGE_ACCOUNT: ${AZURE_STORAGE_ACCOUNT:-}
-      AZURE_STORAGE_KEY: ${AZURE_STORAGE_KEY:-}
     depends_on:
       - kafka
     networks:
       - clearml-serving-backend
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - capabilities: [gpu]
 
   clearml-serving-statistics:
     image: clearml/clearml-serving-statistics:latest
     container_name: clearml-serving-statistics
     restart: unless-stopped
-    # optimize perforamnce
-    security_opt:
-      - seccomp:unconfined
     # ports:
       # - "9999:9999"
     environment:

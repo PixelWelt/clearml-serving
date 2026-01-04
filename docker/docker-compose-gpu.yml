@@ -1,4 +1,5 @@
 version: "3"
+# legacy. To be used with docker-compose v1
 
 services:
   zookeeper:
@@ -75,7 +76,7 @@ services:
 
 
   clearml-serving-inference:
-    image: allegroai/clearml-serving-inference:latest
+    image: clearml/clearml-serving-inference:latest
     container_name: clearml-serving-inference
     restart: unless-stopped
     # optimize perforamnce
@@ -123,7 +124,7 @@ services:
               capabilities: [gpu]
 
   clearml-serving-statistics:
-    image: allegroai/clearml-serving-statistics:latest
+    image: clearml/clearml-serving-statistics:latest
     container_name: clearml-serving-statistics
     restart: unless-stopped
     # optimize perforamnce
